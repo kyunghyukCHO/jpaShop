@@ -1,0 +1,38 @@
+package jpabook.jpashop.Service;
+
+import jpabook.jpashop.Repository.ItemRepository;
+import jpabook.jpashop.domain.Item;
+import jpabook.jpashop.domain.item.Book;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class ItemService {
+
+    private final ItemRepository itemRepository;
+
+    @Transactional
+    public void saveItem(Item item) {
+        itemRepository.save(item);
+    }
+
+    @Transactional // JPA 변경감지 방식 -> 권해지는 방식
+    public void updateItem(Long itemId, String name, int price, int stockQuantity) {
+        Item findItem = itemRepository.findOne(itemId);
+        findItem.setName(name);
+        findItem.setPrice(price);
+        findItem.setStockQuantity(stockQuantity);
+    }
+
+    public List<Item> findItems() {
+        return itemRepository.findAll();
+    }
+    public Item findOne(Long itemId) {
+        return itemRepository.findOne(itemId);
+    }
+}
